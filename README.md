@@ -3,7 +3,7 @@ After completing my finals for school, I thought why not do a midterm for go, li
 
 ## 1. Read and Write Files
 
-Read from a file and list the average, mean, modes, and highest occurence of the numbers found in it. (To help out I also wrote something that generates this file.)
+Read from a file and list the average, mean, and highest occurence of the numbers found in it. (To help out I also wrote something that generates this file.)
 
 ## 2. Fetch URLs
 
