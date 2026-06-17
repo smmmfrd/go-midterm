@@ -25,25 +25,43 @@ func ReadFile() {
 
 	slices.Sort(nums)
 
-	count := make(map[int]int)
-	sum := 0
+	fmt.Printf("Average value: %v\n", findAvg(nums))
+	fmt.Printf("Mean value: %v\n", findMean(nums))
+	fmt.Printf("Value with highest occurence: %v\n", findHighOcc(nums))
+}
 
+func findAvg(nums []int) float32 {
+	sum := 0
 	for _, num := range nums {
-		count[num] += 1
 		sum += num
 	}
 
-	average := float32(sum) / float32(len(nums))
-	var mean float32
+	return float32(sum) / float32(len(nums))
+}
 
+func findMean(nums []int) float32 {
 	if len(nums)%2 == 0 {
-		mean = (float32(nums[(len(nums)/2)-1]) + float32(nums[len(nums)/2])) / 2
+		return (float32(nums[(len(nums)/2)-1]) + float32(nums[len(nums)/2])) / 2
 	} else {
-		mean = float32(nums[len(nums)/2])
+		return float32(nums[len(nums)/2])
+	}
+}
+
+func findHighOcc(nums []int) int {
+	count := make(map[int]int)
+
+	for _, num := range nums {
+		count[num] += 1
 	}
 
-	fmt.Printf("Average value: %v\n", average)
-	fmt.Printf("Mean value: %v\n", mean)
+	high := -1
+	occ := 0
+	for key, value := range count {
+		if value > occ {
+			high = key
+			occ = value
+		}
+	}
 
-	fmt.Println(count)
+	return high
 }
