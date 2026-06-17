@@ -3,6 +3,7 @@ package readfile
 import (
 	"fmt"
 	"os"
+	"slices"
 )
 
 func ReadFile() {
@@ -22,5 +23,27 @@ func ReadFile() {
 		nums = append(nums, int(b)-48)
 	}
 
-	fmt.Println(nums)
+	slices.Sort(nums)
+
+	count := make(map[int]int)
+	sum := 0
+
+	for _, num := range nums {
+		count[num] += 1
+		sum += num
+	}
+
+	average := float32(sum) / float32(len(nums))
+	var mean float32
+
+	if len(nums)%2 == 0 {
+		mean = (float32(nums[(len(nums)/2)-1]) + float32(nums[len(nums)/2])) / 2
+	} else {
+		mean = float32(nums[len(nums)/2])
+	}
+
+	fmt.Printf("Average value: %v\n", average)
+	fmt.Printf("Mean value: %v\n", mean)
+
+	fmt.Println(count)
 }
