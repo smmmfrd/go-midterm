@@ -6,8 +6,14 @@ import (
 	"slices"
 )
 
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
 func ReadFile() {
-	fmt.Println("\n >>>>> READING DATA FROM FILE <<<<<\n")
+	fmt.Println("\n >>>>> READING DATA FROM FILE <<<<<")
 
 	data, err := os.ReadFile("data/random.txt")
 	check(err)

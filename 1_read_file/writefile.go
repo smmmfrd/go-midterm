@@ -7,12 +7,6 @@ import (
 	"strconv"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func WriteFile() {
 	f, err := os.OpenFile("data/random.txt", os.O_WRONLY|os.O_TRUNC, 0644)
 	check(err)
