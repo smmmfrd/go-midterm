@@ -6,22 +6,20 @@ import (
 	"net/http"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func FetchURLs() {
-	res, err := http.Get("http://www.google.com/robots.txt")
-	check(err)
+	fmt.Println("\n----- FETCHING SOME URLS CONCURRENTLY -----")
+	res, err := http.Get("https://this-does-not-exist-abc123.com")
+	if err != nil {
+		fmt.Printf("Error occurred: %s\n", err.Error())
+		return
+	}
 
 	body, err := io.ReadAll(res.Body)
 	res.Body.Close()
-	if res.StatusCode > 299 {
+	if res.StatusCode > 299 || err != nil {
 		fmt.Printf("Failed fetch with code: %d and\nbody: %s\n", res.StatusCode, body)
+		return
 	}
-	check(err)
 
 	fmt.Printf("%s\n", body)
 }
