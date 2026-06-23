@@ -9,6 +9,11 @@ import (
 	"sync"
 )
 
+type response struct {
+	url  string
+	code int
+}
+
 func FetchURLs() {
 	fmt.Println("\n----- FETCHING SOME URLS CONCURRENTLY -----")
 
@@ -21,11 +26,9 @@ func FetchURLs() {
 	urls := strings.Split(string(data), "\n")
 
 	var wg sync.WaitGroup
-	ch := make(chan int)
+	ch := make(chan response)
 
-	for i, url := range urls {
-		fmt.Printf("%d: %s\n", i, url)
-
+	for _, url := range urls {
 		wg.Add(1)
 
 		wg.Go(func() {
@@ -33,7 +36,7 @@ func FetchURLs() {
 		})
 	}
 
-	fmt.Println("We've starting the goroutines!")
+	fmt.Println("We've starting the goroutines!\n")
 
 	go func() {
 		wg.Wait()
@@ -41,13 +44,13 @@ func FetchURLs() {
 	}()
 
 	for result := range ch {
-		fmt.Printf("%d\n", result)
+		fmt.Printf("%s: %d\n", result.url, result.code)
 	}
 
-	fmt.Println("All done!")
+	fmt.Println("\nAll done!")
 }
 
-func fetch(targetURL string, data chan int, wg *sync.WaitGroup) {
+func fetch(targetURL string, data chan response, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	res, err := http.Get(targetURL)
@@ -63,5 +66,8 @@ func fetch(targetURL string, data chan int, wg *sync.WaitGroup) {
 		return
 	}
 
-	data <- res.StatusCode
+	data <- response{
+		url:  targetURL,
+		code: res.StatusCode,
+	}
 }
