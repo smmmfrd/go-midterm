@@ -32,7 +32,8 @@ func FetchURLs() {
 		wg.Add(1)
 
 		wg.Go(func() {
-			fetch(url, ch, &wg)
+			defer wg.Done()
+			fetch(url, ch)
 		})
 	}
 
@@ -50,9 +51,7 @@ func FetchURLs() {
 	fmt.Println("\nAll done!")
 }
 
-func fetch(targetURL string, data chan response, wg *sync.WaitGroup) {
-	defer wg.Done()
-
+func fetch(targetURL string, data chan response) {
 	res, err := http.Get(targetURL)
 	if err != nil {
 		fmt.Printf("Error occurred fetching URL: %s\n", err.Error())
