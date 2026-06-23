@@ -1,7 +1,7 @@
 https://httpbin.org/get
 https://jsonplaceholder.typicode.com/posts/1
+https://httpbin.org/delay/3
 https://api.github.com
 https://httpstat.us/200
 https://httpstat.us/500
 https://this-does-not-exist-abc123.com
-https://httpbin.org/delay/3

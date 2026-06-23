@@ -19,13 +19,20 @@ func FetchURLs() {
 
 	urls := strings.Split(string(data), "\n")
 
+	ch := make(chan int)
+
 	for i, url := range urls {
 		fmt.Printf("%d: %s\n", i, url)
-		fetch(url)
+		go fetch(url, ch)
+	}
+
+	fmt.Println("We've starting the goroutines!")
+	for item := range ch {
+		fmt.Printf("%d\n", item)
 	}
 }
 
-func fetch(targetURL string) {
+func fetch(targetURL string, ch chan int) {
 	res, err := http.Get(targetURL)
 	if err != nil {
 		fmt.Printf("Error occurred fetching URL: %s\n", err.Error())
@@ -39,5 +46,5 @@ func fetch(targetURL string) {
 		return
 	}
 
-	fmt.Printf("%d\n", res.StatusCode)
+	ch <- res.StatusCode
 }
