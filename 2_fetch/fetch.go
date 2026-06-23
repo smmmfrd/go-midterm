@@ -4,13 +4,31 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"strings"
 )
 
 func FetchURLs() {
 	fmt.Println("\n----- FETCHING SOME URLS CONCURRENTLY -----")
-	res, err := http.Get("https://this-does-not-exist-abc123.com")
+
+	data, err := os.ReadFile("data/urls.txt")
 	if err != nil {
-		fmt.Printf("Error occurred: %s\n", err.Error())
+		fmt.Printf("Error reading file: %s\n", err.Error())
+		return
+	}
+
+	urls := strings.Split(string(data), "\n")
+
+	for i, url := range urls {
+		fmt.Printf("%d: %s\n", i, url)
+		fetch(url)
+	}
+}
+
+func fetch(targetURL string) {
+	res, err := http.Get(targetURL)
+	if err != nil {
+		fmt.Printf("Error occurred fetching URL: %s\n", err.Error())
 		return
 	}
 
@@ -21,5 +39,5 @@ func FetchURLs() {
 		return
 	}
 
-	fmt.Printf("%s\n", body)
+	fmt.Printf("%d\n", res.StatusCode)
 }
