@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 )
 
 func FetchURLs() {
@@ -19,20 +20,36 @@ func FetchURLs() {
 
 	urls := strings.Split(string(data), "\n")
 
+	var wg sync.WaitGroup
 	ch := make(chan int)
 
 	for i, url := range urls {
 		fmt.Printf("%d: %s\n", i, url)
-		go fetch(url, ch)
+
+		wg.Add(1)
+
+		wg.Go(func() {
+			fetch(url, ch, &wg)
+		})
 	}
 
 	fmt.Println("We've starting the goroutines!")
-	for item := range ch {
-		fmt.Printf("%d\n", item)
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	for result := range ch {
+		fmt.Printf("%d\n", result)
 	}
+
+	fmt.Println("All done!")
 }
 
-func fetch(targetURL string, ch chan int) {
+func fetch(targetURL string, data chan int, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	res, err := http.Get(targetURL)
 	if err != nil {
 		fmt.Printf("Error occurred fetching URL: %s\n", err.Error())
@@ -46,5 +63,5 @@ func fetch(targetURL string, ch chan int) {
 		return
 	}
 
-	ch <- res.StatusCode
+	data <- res.StatusCode
 }
