@@ -1,14 +1,13 @@
 package main
 
-import (
-	readfile "github.com/smmmfrd/go-midterm/1_read_file"
-	fetch "github.com/smmmfrd/go-midterm/2_fetch"
-)
+import redis "github.com/smmmfrd/go-midterm/3_redis"
 
 func main() {
 	// readfile.WriteFile()
 
-	readfile.ReadFile()
+	// readfile.ReadFile()
 
-	fetch.FetchURLs()
+	// fetch.FetchURLs()
+
+	redis.Run()
 }
