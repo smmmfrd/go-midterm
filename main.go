@@ -1,6 +1,10 @@
 package main
 
-import redis "github.com/smmmfrd/go-midterm/3_redis"
+import (
+	"time"
+
+	redis "github.com/smmmfrd/go-midterm/3_redis"
+)
 
 func main() {
 	// readfile.WriteFile()
@@ -8,6 +12,10 @@ func main() {
 	// readfile.ReadFile()
 
 	// fetch.FetchURLs()
+
+	go redis.Start()
+
+	time.Sleep(10 * time.Millisecond)
 
 	redis.Run()
 }
