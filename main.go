@@ -17,5 +17,5 @@ func main() {
 
 	time.Sleep(10 * time.Millisecond)
 
-	redis.Run()
+	redis.Client()
 }

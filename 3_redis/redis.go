@@ -6,30 +6,6 @@ import (
 	"net"
 )
 
-// Runs some checks on the Redis
-func Run() {
-	fmt.Println("hello from the test script")
-
-	conn, err := net.Dial("tcp", "localhost:8090")
-	if err != nil {
-		fmt.Println("Error connecting to tcp server: ", err)
-		return
-	}
-
-	defer conn.Close()
-
-	fmt.Fprintf(conn, "hello from run\n")
-
-	reader := bufio.NewReader(conn)
-	res, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading response: ", err)
-		return
-	}
-
-	fmt.Println("Response: ", res)
-}
-
 // Starts the Redis
 func Start() {
 	listener, err := net.Listen("tcp", "localhost:8090")
@@ -45,7 +21,7 @@ func Start() {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			fmt.Println("Error accepting conn: ", err)
+			fmt.Println("Error accepting conn:", err)
 			continue
 		}
 
@@ -59,11 +35,11 @@ func handleConn(conn net.Conn) {
 	reader := bufio.NewReader(conn)
 	message, err := reader.ReadString('\n')
 	if err != nil {
-		fmt.Println("Error reading message: ", err)
+		fmt.Println("Error reading message:", err)
 		return
 	}
 
-	fmt.Printf("Received message: %s\n", message)
+	fmt.Printf("[SERVER] Received message: %s", message)
 
-	conn.Write([]byte("Message Received\n"))
+	conn.Write([]byte("Server Received Your Message\n"))
 }
