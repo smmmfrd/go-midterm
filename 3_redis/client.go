@@ -6,6 +6,8 @@ import (
 	"net"
 )
 
+var messages = []string{"SET name", "GET name", "DELETE name"}
+
 func Client() {
 	fmt.Println("")
 
@@ -17,9 +19,16 @@ func Client() {
 
 	defer conn.Close()
 
-	fmt.Fprintf(conn, "Hello message from Client\n")
+	for _, message := range messages {
+		sendMessage(message, &conn)
+	}
+}
 
-	reader := bufio.NewReader(conn)
+func sendMessage(message string, conn *net.Conn) {
+
+	fmt.Fprintf(*conn, "%s\n", message)
+
+	reader := bufio.NewReader(*conn)
 	res, err := reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Error reading response:", err)
@@ -27,4 +36,5 @@ func Client() {
 	}
 
 	fmt.Println("[CLIENT] Received response:", res)
+
 }
