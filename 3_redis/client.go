@@ -6,7 +6,11 @@ import (
 	"net"
 )
 
-var messages = []string{"SET name", "GET name", "DELETE name"}
+var messages = []string{
+	"SET name Sam",
+	"GET name",
+	"DELETE name",
+}
 
 func Client() {
 	fmt.Println("")
