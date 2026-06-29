@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"strings"
 )
 
 // Starts the Redis
@@ -41,8 +42,19 @@ func handleConn(conn net.Conn) {
 			return
 		}
 
-		fmt.Printf("[SERVER] Received message: %s", message)
+		conn.Write(handleMessage(message))
 
-		conn.Write([]byte("Server Received Your Message\n"))
 	}
+}
+
+func handleMessage(message string) []byte {
+	words := strings.Split(message, " ")
+
+	fmt.Printf("[SERVER] Received message: ")
+	for i, word := range words {
+		fmt.Printf("%d: %s ", i, word)
+	}
+	fmt.Println()
+
+	return []byte("Server Received Your Message\n")
 }
