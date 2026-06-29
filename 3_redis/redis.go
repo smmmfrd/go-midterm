@@ -43,7 +43,6 @@ func handleConn(conn net.Conn) {
 		}
 
 		conn.Write(handleMessage(message))
-
 	}
 }
 
@@ -56,5 +55,26 @@ func handleMessage(message string) []byte {
 	}
 	fmt.Println()
 
+	switch words[0] {
+	case "SET":
+		return handleSet(words)
+	case "GET":
+		fmt.Println("Client wants to get a value")
+	case "DELETE":
+		fmt.Println("Client wants to delete a value")
+	default:
+		fmt.Println("Unknown command.")
+	}
+
 	return []byte("Server Received Your Message\n")
+}
+
+func handleSet(words []string) []byte {
+	if len(words) < 3 {
+		return []byte("Incorrect amount of arguments for a set command.\n")
+	}
+
+	fmt.Printf("Client wants to set a value at %s\n", words[1])
+
+	return []byte("Set value at: " + words[1] + "\n")
 }
