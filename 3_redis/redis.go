@@ -33,13 +33,16 @@ func handleConn(conn net.Conn) {
 	defer conn.Close()
 
 	reader := bufio.NewReader(conn)
-	message, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading message:", err)
-		return
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading message:", err)
+			return
+		}
+
+		fmt.Printf("[SERVER] Received message: %s", message)
+
+		conn.Write([]byte("Server Received Your Message\n"))
 	}
-
-	fmt.Printf("[SERVER] Received message: %s", message)
-
-	conn.Write([]byte("Server Received Your Message\n"))
 }
