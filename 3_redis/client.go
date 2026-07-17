@@ -8,8 +8,8 @@ import (
 
 var messages = []string{
 	"SET name Sam",
-	"GET name",
-	"DELETE name",
+	// "GET name",
+	// "DELETE name",
 }
 
 func Client() {
