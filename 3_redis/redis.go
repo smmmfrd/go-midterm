@@ -27,10 +27,21 @@ func (r *Redis) Get(key string) (string, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	fmt.Println(r.values)
-
 	if value, ok := r.values[key]; ok {
 		return value, nil
 	}
 	return "", fmt.Errorf("No value exists there.")
+}
+
+func (r *Redis) Delete(key string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if _, ok := r.values[key]; !ok {
+		return fmt.Errorf("No value exists at key: %s", key)
+	}
+
+	delete(r.values, key)
+
+	return nil
 }

@@ -63,8 +63,8 @@ func handleMessage(message string, redis *Redis) []byte {
 		return handleSet(words, redis)
 	case "GET":
 		return handleGet(words, redis)
-	// case "DELETE":
-	// 	fmt.Println("Client wants to delete a value")
+	case "DELETE":
+		return handleDelete(words, redis)
 	default:
 		fmt.Println("Unknown command.")
 	}
@@ -88,7 +88,6 @@ func handleSet(words []string, redis *Redis) []byte {
 }
 
 func handleGet(words []string, redis *Redis) []byte {
-	fmt.Println(redis.values)
 	if len(words) < 2 {
 		return []byte("Incorrect amount of arguments for a GET command.\n")
 	}
@@ -100,4 +99,18 @@ func handleGet(words []string, redis *Redis) []byte {
 
 	fmt.Printf("Client got: %s at: %s\n", value, words[1])
 	return []byte("Value: " + value + "\n")
+}
+
+func handleDelete(words []string, redis *Redis) []byte {
+	if len(words) < 2 {
+		return []byte("Incorrect amount of arguments for a DELETE command.\n")
+	}
+
+	err := redis.Delete(words[1])
+	if err != nil {
+		return []byte(err.Error() + "\n")
+	}
+
+	fmt.Printf("Client deleted value at: %s\n", words[1])
+	return []byte("Deleted value at: " + words[1] + "\n")
 }
