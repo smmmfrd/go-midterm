@@ -8,7 +8,7 @@ import (
 
 var messages = []string{
 	"SET name Sam",
-	// "GET name",
+	"GET name",
 	// "DELETE name",
 }
 

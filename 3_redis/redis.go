@@ -26,6 +26,18 @@ func (r *Redis) Set(key string, value string) error {
 	return nil
 }
 
+func (r *Redis) Get(key string) (string, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	fmt.Println(r.values)
+
+	if value, ok := r.values[key]; ok {
+		return value, nil
+	}
+	return "", fmt.Errorf("No value exists there.")
+}
+
 // Starts the Redis
 func Start() {
 	listener, err := net.Listen("tcp", "localhost:8090")
@@ -38,7 +50,7 @@ func Start() {
 
 	fmt.Println("Started TCP server at localhost:8090")
 
-	redis := &Redis{values: map[string]string{}}
+	redis := Redis{values: make(map[string]string)}
 
 	for {
 		conn, err := listener.Accept()
@@ -47,7 +59,7 @@ func Start() {
 			continue
 		}
 
-		go handleConn(conn, redis)
+		go handleConn(conn, &redis)
 	}
 }
 
@@ -68,6 +80,7 @@ func handleConn(conn net.Conn, redis *Redis) {
 }
 
 func handleMessage(message string, redis *Redis) []byte {
+	message = strings.TrimSpace(message)
 	words := strings.Split(message, " ")
 
 	// fmt.Printf("[SERVER] Received message: ")
@@ -79,8 +92,8 @@ func handleMessage(message string, redis *Redis) []byte {
 	switch words[0] {
 	case "SET":
 		return handleSet(words, redis)
-	// case "GET":
-	// 	return handleGet(words)
+	case "GET":
+		return handleGet(words, redis)
 	// case "DELETE":
 	// 	fmt.Println("Client wants to delete a value")
 	default:
@@ -105,16 +118,17 @@ func handleSet(words []string, redis *Redis) []byte {
 	return []byte("Set value at: " + words[1] + "\n")
 }
 
-// func handleGet(words []string, redis *Redis) []byte {
-// 	if len(words) < 2 {
-// 		return []byte("Incorrect amount of arguments for a GET command.\n")
-// 	}
+func handleGet(words []string, redis *Redis) []byte {
+	fmt.Println(redis.values)
+	if len(words) < 2 {
+		return []byte("Incorrect amount of arguments for a GET command.\n")
+	}
 
-// 	if _, ok := redis.Values[words[1]]; ok {
-// 		fmt.Printf("Client got: %s at: %s\n", redis[words[1]], words[1])
-// 	} else {
-// 		return []byte("Value does not exist.\n")
-// 	}
+	value, err := redis.Get(words[1])
+	if err != nil {
+		return []byte(err.Error() + "\n")
+	}
 
-// 	return []byte("Value: " + redis[words[1]])
-// }
+	fmt.Printf("Client got: %s at: %s\n", value, words[1])
+	return []byte("Value: " + value + "\n")
+}
