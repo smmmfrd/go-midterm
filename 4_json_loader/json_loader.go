@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"reflect"
 )
 
 func check(e error) {
@@ -40,12 +41,35 @@ func JsonLoader(filename string) {
 	filedata, err := os.ReadFile(filename)
 	check(err)
 
-	fmt.Println(string(filedata))
-
 	serverJSON := ServerJSON{}
 
 	err = json.Unmarshal(filedata, &serverJSON)
 	check(err)
 
-	fmt.Println(serverJSON)
+	err = Verify(reflect.ValueOf(serverJSON))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+}
+
+// Checks if each field has a value
+func Verify(v reflect.Value) error {
+	for i := range v.NumField() {
+		field := v.Field(i)
+		name := v.Type().Field(i).Name
+
+		switch field.Kind() {
+		case reflect.String:
+			if len(field.String()) == 0 {
+				return fmt.Errorf("Empty string found at %s", name)
+			}
+		}
+
+		if v.Field(i).Kind() == reflect.Struct {
+			return Verify(v.Field(i))
+		}
+	}
+
+	return nil
 }

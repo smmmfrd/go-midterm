@@ -1,11 +1,11 @@
 {
     "server": {
-        "host": "",
-        "port": -1,
-        "timeout": -1
+        "host": "localhost",
+        "port": 8090,
+        "timeout": 20
     },
     "database": {
-        "url": "",
-        "max_connections": 10
+        "url": "postgres://localhost:2345/myotherdb",
+        "max_connections": 40
     }
 }
