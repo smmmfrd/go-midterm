@@ -15,7 +15,14 @@ Create a mini redis program that just uses memory to do it's stuff
 
 ## 4. JSON Loader and Validator
 
-Read JSON into a struct and ensure each key has a value
+Read JSON into a struct from a file and ensure each key has a value
+
+For the JSON files:
+- port should be between 1 and 65535
+- max_connections should be a positive integer
+- level should only be one of "info", "debug", "warn", "error"
+- host and url shouldn't be empty strings
+- Maybe timeout has a minimum value
 
 ## 5. Rate limiter
 

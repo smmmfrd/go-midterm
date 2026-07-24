@@ -1,0 +1,15 @@
+{
+    "server": {
+        "host": "",
+        "port": -1,
+        "timeout": -1
+    },
+    "database": {
+        "url": "",
+        "max_connections": 10
+    },
+    "logging": {
+        "level": "apple",
+        "file": "app.log"
+    }
+}

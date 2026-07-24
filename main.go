@@ -1,10 +1,6 @@
 package main
 
-import (
-	"time"
-
-	redis "github.com/smmmfrd/go-midterm/3_redis"
-)
+import jsonloader "github.com/smmmfrd/go-midterm/4_json_loader"
 
 func main() {
 	// readfile.WriteFile()
@@ -13,9 +9,11 @@ func main() {
 
 	// fetch.FetchURLs()
 
-	go redis.Start()
+	// go redis.Start()
 
-	time.Sleep(10 * time.Millisecond)
+	// time.Sleep(10 * time.Millisecond)
 
-	redis.Client()
+	// redis.Client()
+
+	jsonloader.JsonLoader()
 }
