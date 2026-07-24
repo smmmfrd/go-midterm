@@ -15,5 +15,5 @@ func main() {
 
 	// redis.Client()
 
-	jsonloader.JsonLoader()
+	jsonloader.ReadJson()
 }
