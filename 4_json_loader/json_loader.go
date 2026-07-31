@@ -33,17 +33,27 @@ var files = []string{ /*"data/json/good.json", "data/json/bad.json",*/ "data/jso
 
 func ReadJson() {
 	for _, v := range files {
-		JsonLoader(v)
+		ValidateJSON(v)
 	}
 }
 
-func JsonLoader(filename string) {
+func ValidateJSON(filename string) {
 	filedata, err := os.ReadFile(filename)
 	check(err)
 
-	replacer := strings.NewReplacer(" ", "", "\n", "", "\t", "")
-	fmt.Println(replacer.Replace(string(filedata)))
-	fmt.Println(structToString(reflect.TypeFor[ServerJSON]()))
+	replacer := strings.NewReplacer(
+		" ", "",
+		"\n", "",
+		"\t", "",
+		"{", "",
+		"}", "",
+		"\"", "",
+	)
+	data := replacer.Replace(string(filedata))
+
+	s := replacer.Replace(structToString(reflect.TypeFor[ServerJSON]()))
+
+	validateDataToStructByString(data, s)
 }
 
 func structToString(t reflect.Type) string {
@@ -67,4 +77,22 @@ func structToString(t reflect.Type) string {
 	}
 
 	return fmt.Sprintf("{%s}", strings.Join(keys, ""))
+}
+
+func validateDataToStructByString(d string, s string) {
+	fmt.Println(d)
+	fmt.Println(s)
+
+	caretLocation, currentWordIndex := 0, 0
+	for {
+		caretLocation += currentWordIndex
+		currentWordIndex = strings.IndexFunc(s[caretLocation:], func(r rune) bool { return r == ':' || r == ',' })
+
+		if currentWordIndex < 0 {
+			break
+		}
+
+		fmt.Println(s[caretLocation : caretLocation+currentWordIndex])
+		currentWordIndex++
+	}
 }
