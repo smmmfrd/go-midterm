@@ -1,10 +1,10 @@
 package jsonloader
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
+	"strings"
 )
 
 func check(e error) {
@@ -29,7 +29,7 @@ type ServerJSON struct {
 	} `json:"logging"`
 }
 
-var files = []string{"data/json/good.json", "data/json/bad.json", "data/json/wrong.json"}
+var files = []string{ /*"data/json/good.json", "data/json/bad.json",*/ "data/json/wrong.json"}
 
 func ReadJson() {
 	for _, v := range files {
@@ -41,35 +41,30 @@ func JsonLoader(filename string) {
 	filedata, err := os.ReadFile(filename)
 	check(err)
 
-	serverJSON := ServerJSON{}
-
-	err = json.Unmarshal(filedata, &serverJSON)
-	check(err)
-
-	err = Verify(reflect.ValueOf(serverJSON))
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	replacer := strings.NewReplacer(" ", "", "\n", "", "\t", "")
+	fmt.Println(replacer.Replace(string(filedata)))
+	fmt.Println(structToString(reflect.TypeFor[ServerJSON]()))
 }
 
-// Checks if each field has a value
-func Verify(v reflect.Value) error {
-	for i := range v.NumField() {
-		field := v.Field(i)
-		name := v.Type().Field(i).Name
+func structToString(t reflect.Type) string {
+	var keys []string
+	for i := range t.NumField() {
+		key := ""
 
-		switch field.Kind() {
-		case reflect.String:
-			if len(field.String()) == 0 {
-				return fmt.Errorf("Empty string found at %s", name)
-			}
+		field := t.Field(i)
+
+		if field.Type.Kind() == reflect.Struct {
+			key += fmt.Sprintf("\"%s\":", field.Tag.Get("json"))
+			key += structToString(field.Type)
+		} else {
+			key += fmt.Sprintf("\"%s\":%s", field.Tag.Get("json"), field.Type.String())
+		}
+		if i != t.NumField()-1 {
+			key += ","
 		}
 
-		if v.Field(i).Kind() == reflect.Struct {
-			return Verify(v.Field(i))
-		}
+		keys = append(keys, key)
 	}
 
-	return nil
+	return fmt.Sprintf("{%s}", strings.Join(keys, ""))
 }
