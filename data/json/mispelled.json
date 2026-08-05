@@ -1,0 +1,15 @@
+{
+    "server": {
+        "host": "localhost",
+        "port": 8090,
+        "timeout": 20
+    },
+    "database": {
+        "url": "postgres://localhost:2345/myotherdb",
+        "max_connection": 40
+    },
+    "logging": {
+        "level": "debug",
+        "file": "app.log"
+    }
+}
