@@ -30,7 +30,7 @@ type ServerJSON struct {
 	} `json:"logging"`
 }
 
-var files = []string{ /*"data/json/good.json",*/ "data/json/bad.json", "data/json/wrong.json"}
+var files = []string{"data/json/good.json", "data/json/bad.json", "data/json/wrong.json", "data/json/mispelled.json"}
 
 func ReadJson() {
 	for _, v := range files {
@@ -56,7 +56,16 @@ func ValidateJSON(filename string) {
 
 	s := replacer.Replace(structToString(reflect.TypeFor[ServerJSON]()))
 
-	compareJsonArrays(jsonStringToArray(data), jsonStringToArray(s))
+	issues := compareJsonArrays(jsonStringToArray(data), jsonStringToArray(s))
+
+	if len(issues) > 0 {
+		fmt.Println("Issues were found with converting: " + filename)
+		for _, v := range issues {
+			fmt.Printf("\t%s\n", v)
+		}
+	} else {
+		fmt.Println(filename + " was converted successfully.")
+	}
 }
 
 func structToString(t reflect.Type) string {
@@ -100,7 +109,7 @@ func jsonStringToArray(j string) []string {
 	return arr
 }
 
-func compareJsonArrays(data, shape []string) {
+func compareJsonArrays(data, shape []string) []string {
 	var smaller, larger []string
 	if len(data) > len(shape) {
 		smaller = shape
@@ -110,14 +119,15 @@ func compareJsonArrays(data, shape []string) {
 		larger = shape
 	}
 
+	var issues []string
 	for i := 0; i < len(larger)-1; i++ {
 		if i >= len(smaller) {
-			fmt.Println("Smaller missing key: " + larger[i])
+			issues = append(issues, "Missing key: "+larger[i])
 			break
 		}
 
 		if larger[i] != smaller[i] {
-			fmt.Printf("Incorrect key in file: \n\tExpected: %s\n\tFound: %s\n", larger[i], smaller[i])
+			issues = append(issues, fmt.Sprintf("Incorrect key, Expected: %s\tFound: %s", larger[i], smaller[i]))
 			break
 		}
 
@@ -126,32 +136,32 @@ func compareJsonArrays(data, shape []string) {
 		case "port":
 			portValue, err := strconv.Atoi(smaller[i+1])
 			if err != nil {
-				fmt.Println(err.Error())
+				issues = append(issues, "Issue with port value from file: "+err.Error())
 			}
 
 			if portValue < 1 || portValue > 65535 {
-				fmt.Println("Bad Port Value")
+				issues = append(issues, "Bad port value")
 			}
 		case "timeout":
 			fallthrough
 		case "max_connections":
 			connections, err := strconv.Atoi(smaller[i+1])
 			if err != nil {
-				fmt.Println(err.Error())
+				issues = append(issues, "Issue with max_connection value from file: "+err.Error())
 			}
 
 			if connections <= 0 {
-				fmt.Println("Bad Max Connections Value")
+				issues = append(issues, "Bad max connections value")
 			}
 		case "level":
 			if !strings.Contains("infodebugwarnerror", smaller[i+1]) {
-				fmt.Println("Bad Logging Level")
+				issues = append(issues, "Bad logging level")
 			}
 		case "host":
 			fallthrough
 		case "url":
 			if smaller[i+1] == "" {
-				fmt.Println("No url specified for " + larger[i])
+				issues = append(issues, "No url specified for "+larger[i])
 			}
 		}
 
@@ -163,4 +173,6 @@ func compareJsonArrays(data, shape []string) {
 			i++
 		}
 	}
+
+	return issues
 }
