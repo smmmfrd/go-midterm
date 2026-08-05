@@ -109,10 +109,23 @@ func compareJsonArrays(data, shape []string) {
 		larger = shape
 	}
 
-	for i := 0; i < len(larger); i++ {
+	for i := 0; i < len(larger)-1; i++ {
 		if i >= len(smaller) {
 			fmt.Println("Smaller missing key: " + larger[i])
 			break
+		}
+
+		if larger[i] != smaller[i] {
+			fmt.Printf("Incorrect key in file: \n\tExpected: %s\n\tFound: %s\n", larger[i], smaller[i])
+			break
+		}
+
+		// Check if the next value is a data type, if it is we skip that index
+		switch larger[i+1] {
+		case "string":
+			fallthrough
+		case "int":
+			i++
 		}
 	}
 }
