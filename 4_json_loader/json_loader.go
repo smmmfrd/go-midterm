@@ -48,12 +48,15 @@ func ValidateJSON(filename string) {
 		"{", "",
 		"}", "",
 		"\"", "",
+		"://", ".//",
+		"localhost:", "localhost.",
 	)
 	data := replacer.Replace(string(filedata))
 
 	s := replacer.Replace(structToString(reflect.TypeFor[ServerJSON]()))
 
-	validateDataToStructByString(data, s)
+	fmt.Println(jsonStringToArray(data))
+	fmt.Println(jsonStringToArray(s))
 }
 
 func structToString(t reflect.Type) string {
@@ -79,20 +82,20 @@ func structToString(t reflect.Type) string {
 	return fmt.Sprintf("{%s}", strings.Join(keys, ""))
 }
 
-func validateDataToStructByString(d string, s string) {
-	fmt.Println(d)
-	fmt.Println(s)
-
+func jsonStringToArray(j string) []string {
+	var arr []string
 	caretLocation, currentWordIndex := 0, 0
 	for {
 		caretLocation += currentWordIndex
-		currentWordIndex = strings.IndexFunc(s[caretLocation:], func(r rune) bool { return r == ':' || r == ',' })
+		currentWordIndex = strings.IndexFunc(j[caretLocation:], func(r rune) bool { return r == ':' || r == ',' })
 
 		if currentWordIndex < 0 {
+			arr = append(arr, j[caretLocation:])
 			break
 		}
 
-		fmt.Println(s[caretLocation : caretLocation+currentWordIndex])
+		arr = append(arr, j[caretLocation:caretLocation+currentWordIndex])
 		currentWordIndex++
 	}
+	return arr
 }
