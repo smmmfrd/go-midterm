@@ -55,8 +55,7 @@ func ValidateJSON(filename string) {
 
 	s := replacer.Replace(structToString(reflect.TypeFor[ServerJSON]()))
 
-	fmt.Println(jsonStringToArray(data))
-	fmt.Println(jsonStringToArray(s))
+	compareJsonArrays(jsonStringToArray(data), jsonStringToArray(s))
 }
 
 func structToString(t reflect.Type) string {
@@ -98,4 +97,22 @@ func jsonStringToArray(j string) []string {
 		currentWordIndex++
 	}
 	return arr
+}
+
+func compareJsonArrays(data, shape []string) {
+	var smaller, larger []string
+	if len(data) > len(shape) {
+		smaller = shape
+		larger = data
+	} else {
+		smaller = data
+		larger = shape
+	}
+
+	for i := 0; i < len(larger); i++ {
+		if i >= len(smaller) {
+			fmt.Println("Smaller missing key: " + larger[i])
+			break
+		}
+	}
 }
