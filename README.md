@@ -24,6 +24,12 @@ For the JSON files:
 - host and url shouldn't be empty strings
 - Maybe timeout has a minimum value
 
+### Continuation Ideas
+
+- [ ] Read in files from folder
+- [ ] Pass in a something to do the evaluations of the key values. (making this generic by requiring the business logic from the user)
+- [ ] Alphabetically sort both of them (by level obviously) to allow user to have their json files in whatever order.
+
 ## 5. Rate limiter
 
 Make a simple HTTP server then implement a rate limiter
