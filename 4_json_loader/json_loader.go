@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -29,7 +30,7 @@ type ServerJSON struct {
 	} `json:"logging"`
 }
 
-var files = []string{ /*"data/json/good.json", "data/json/bad.json",*/ "data/json/wrong.json"}
+var files = []string{ /*"data/json/good.json",*/ "data/json/bad.json", "data/json/wrong.json"}
 
 func ReadJson() {
 	for _, v := range files {
@@ -118,6 +119,40 @@ func compareJsonArrays(data, shape []string) {
 		if larger[i] != smaller[i] {
 			fmt.Printf("Incorrect key in file: \n\tExpected: %s\n\tFound: %s\n", larger[i], smaller[i])
 			break
+		}
+
+		// Program specific evals
+		switch larger[i] {
+		case "port":
+			portValue, err := strconv.Atoi(smaller[i+1])
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+			if portValue < 1 || portValue > 65535 {
+				fmt.Println("Bad Port Value")
+			}
+		case "timeout":
+			fallthrough
+		case "max_connections":
+			connections, err := strconv.Atoi(smaller[i+1])
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+			if connections <= 0 {
+				fmt.Println("Bad Max Connections Value")
+			}
+		case "level":
+			if !strings.Contains("infodebugwarnerror", smaller[i+1]) {
+				fmt.Println("Bad Logging Level")
+			}
+		case "host":
+			fallthrough
+		case "url":
+			if smaller[i+1] == "" {
+				fmt.Println("No url specified for " + larger[i])
+			}
 		}
 
 		// Check if the next value is a data type, if it is we skip that index
