@@ -1,6 +1,6 @@
 package main
 
-import jsonloader "github.com/smmmfrd/go-midterm/4_json_loader"
+import ratelimiter "github.com/smmmfrd/go-midterm/5_rate_limiter"
 
 func main() {
 	// readfile.WriteFile()
@@ -15,5 +15,7 @@ func main() {
 
 	// redis.Client()
 
-	jsonloader.ReadJson()
+	// jsonloader.ReadJson()
+
+	ratelimiter.Start()
 }
