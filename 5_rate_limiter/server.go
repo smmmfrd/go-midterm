@@ -8,9 +8,8 @@ import (
 	"time"
 )
 
-func Start() {
+func Start(duration time.Duration) {
 	fmt.Println("hello from the server with a rate limiter!")
-	var serverDuration time.Duration = 10
 
 	port := "9009"
 
@@ -30,7 +29,7 @@ func Start() {
 		log.Fatal(server.ListenAndServe())
 	}()
 
-	time.Sleep(serverDuration * time.Second)
+	time.Sleep(duration)
 
 	fmt.Println("Shutting down")
 }

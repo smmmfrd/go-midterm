@@ -1,8 +1,13 @@
 package main
 
-import ratelimiter "github.com/smmmfrd/go-midterm/5_rate_limiter"
+import (
+	"time"
+
+	ratelimiter "github.com/smmmfrd/go-midterm/5_rate_limiter"
+)
 
 func main() {
+	var serverDuration time.Duration = 10 * time.Second
 	// readfile.WriteFile()
 
 	// readfile.ReadFile()
@@ -11,11 +16,13 @@ func main() {
 
 	// go redis.Start()
 
-	// time.Sleep(10 * time.Millisecond)
+	// time.Sleep(serverDuration * time.Second)
 
 	// redis.Client()
 
 	// jsonloader.ReadJson()
 
-	ratelimiter.Start()
+	go ratelimiter.Start(serverDuration)
+
+	time.Sleep(serverDuration)
 }
