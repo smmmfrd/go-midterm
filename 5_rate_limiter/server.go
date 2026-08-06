@@ -35,7 +35,7 @@ func Start(duration time.Duration) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hello\n"))
+	w.Write([]byte("hello"))
 }
 
 func limiterMiddleware(next http.HandlerFunc) http.HandlerFunc {

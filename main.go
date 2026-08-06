@@ -24,5 +24,6 @@ func main() {
 
 	go ratelimiter.Start(serverDuration)
 
+	ratelimiter.BeginClient()
 	time.Sleep(serverDuration)
 }
