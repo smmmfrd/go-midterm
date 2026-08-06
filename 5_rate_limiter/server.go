@@ -40,11 +40,15 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func limiterMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	history := make(map[string]int)
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		portIndex := strings.Index(r.RemoteAddr, ":")
 		address := r.RemoteAddr[:portIndex]
 
-		fmt.Printf("Received request from: %s\n", address)
+		history[address] += 1
+
+		fmt.Printf("Received request from: %s. They have made %d requests.\n", address, history[address])
 		next.ServeHTTP(w, r)
 	})
 }
