@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -17,7 +18,7 @@ func Start() {
 	// Another script can spam it
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /", index)
+	mux.HandleFunc("GET /", limiterMiddleware(index))
 
 	server := &http.Server{
 		Addr:    "localhost" + ":" + port,
@@ -36,4 +37,14 @@ func Start() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("hello\n"))
+}
+
+func limiterMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		portIndex := strings.Index(r.RemoteAddr, ":")
+		address := r.RemoteAddr[:portIndex]
+
+		fmt.Printf("Received request from: %s\n", address)
+		next.ServeHTTP(w, r)
+	})
 }
