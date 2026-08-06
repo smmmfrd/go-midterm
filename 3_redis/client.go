@@ -14,8 +14,6 @@ var messages = []string{
 }
 
 func Client() {
-	fmt.Println("")
-
 	conn, err := net.Dial("tcp", "localhost:8090")
 	if err != nil {
 		fmt.Println("Error connecting to tcp server:", err)

@@ -15,8 +15,6 @@ type response struct {
 }
 
 func FetchURLs() {
-	fmt.Println("\n----- FETCHING SOME URLS CONCURRENTLY -----")
-
 	data, err := os.ReadFile("data/urls.txt")
 	if err != nil {
 		fmt.Printf("Error reading file: %s\n", err.Error())
@@ -37,8 +35,6 @@ func FetchURLs() {
 		})
 	}
 
-	fmt.Println("We've starting the goroutines!\n")
-
 	go func() {
 		wg.Wait()
 		close(ch)
@@ -47,8 +43,6 @@ func FetchURLs() {
 	for result := range ch {
 		fmt.Printf("%s: %d\n", result.url, result.code)
 	}
-
-	fmt.Println("\nAll done!")
 }
 
 func fetch(targetURL string, data chan response) {

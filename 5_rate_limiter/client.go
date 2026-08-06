@@ -7,8 +7,6 @@ import (
 )
 
 func BeginClient() {
-	fmt.Println("beginning spamming")
-
 	for i := range 10 {
 		err := makeReq()
 		if err != nil {

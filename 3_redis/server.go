@@ -68,12 +68,6 @@ func handleMessage(message string, redis *Redis) []byte {
 	message = strings.TrimSpace(message)
 	words := strings.Split(message, " ")
 
-	// fmt.Printf("[SERVER] Received message: ")
-	// for i, word := range words {
-	// 	fmt.Printf("%d: %s ", i, word)
-	// }
-	// fmt.Println()
-
 	switch words[0] {
 	case "SET":
 		return handleSet(words, redis)

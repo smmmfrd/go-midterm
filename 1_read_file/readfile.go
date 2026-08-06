@@ -13,8 +13,6 @@ func check(e error) {
 }
 
 func ReadFile() {
-	fmt.Println("\n >>>>> READING DATA FROM FILE <<<<<")
-
 	data, err := os.ReadFile("data/random.txt")
 	check(err)
 
@@ -31,7 +29,6 @@ func ReadFile() {
 	fmt.Printf("Average value: %v\n", findAvg(nums))
 	fmt.Printf("Mean value: %v\n", findMean(nums))
 	fmt.Printf("Value with highest occurence: %v\n", findHighOcc(nums))
-	fmt.Println()
 }
 
 func findAvg(nums []int) float32 {
