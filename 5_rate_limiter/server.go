@@ -5,11 +5,12 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 )
 
-func Start(duration time.Duration) {
-	fmt.Println("hello from the server with a rate limiter!")
+func Start(duration time.Duration, wg *sync.WaitGroup) {
+	defer wg.Done()
 
 	maxRequests := 5
 	port := "9009"
@@ -32,7 +33,7 @@ func Start(duration time.Duration) {
 
 	time.Sleep(duration)
 
-	fmt.Println("Shutting down")
+	fmt.Println("Shutting Down Rate Limited Server")
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
